@@ -1,0 +1,185 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 140 20% 96%;
+    --foreground: 150 30% 15%;
+
+    --card: 140 25% 98%;
+    --card-foreground: 150 30% 15%;
+
+    --popover: 140 25% 98%;
+    --popover-foreground: 150 30% 15%;
+
+    --primary: 152 45% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 145 20% 92%;
+    --secondary-foreground: 150 30% 20%;
+
+    --muted: 145 18% 90%;
+    --muted-foreground: 150 15% 45%;
+
+    --accent: 150 25% 88%;
+    --accent-foreground: 150 30% 18%;
+
+    --destructive: 0 65% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 148 20% 88%;
+    --input: 148 20% 88%;
+    --ring: 152 45% 35%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-semibold tracking-tight;
+  }
+}
+
+@layer components {
+  .floating-card {
+    @apply bg-card rounded-3xl border border-border/60;
+  }
+
+  .search-input {
+    @apply bg-secondary/60 border-0 rounded-xl h-14 text-base placeholder:text-muted-foreground/70 focus:ring-2 focus:ring-primary/30 focus:bg-card transition-all duration-300;
+  }
+
+  .flight-card {
+    @apply bg-card border border-border/50 p-4 hover:border-primary/30 transition-all duration-300 cursor-pointer;
+    background: linear-gradient(
+      180deg,
+      hsl(var(--card)) 0%,
+      hsl(145 22% 97%) 100%
+    );
+  }
+
+  .flight-card:hover {
+    transform: translateY(-1px);
+  }
+
+  .price-tag {
+    @apply text-2xl font-bold text-primary tracking-tight;
+  }
+
+  .time-display {
+    @apply text-lg font-semibold text-foreground;
+  }
+
+  .duration-badge {
+    @apply text-sm text-muted-foreground font-medium;
+  }
+
+  .stops-line {
+    @apply h-0.5 bg-border relative flex-1;
+  }
+
+  .stop-dot {
+    @apply w-2 h-2 rounded-full bg-primary absolute top-1/2 -translate-y-1/2;
+  }
+
+  .filter-chip {
+    @apply px-4 py-2 rounded-full text-sm font-medium bg-secondary text-secondary-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-200 cursor-pointer;
+  }
+}
+
+@layer utilities {
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .shadow-floating {
+    box-shadow: var(--shadow-floating);
+  }
+
+  .shadow-elevated {
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .shadow-premium {
+    box-shadow: var(--shadow-premium);
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.6;
+    }
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 1.5s ease-in-out infinite;
+  }
+}
