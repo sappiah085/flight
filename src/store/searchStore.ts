@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Flight } from "@/lib/types";
-import { searchFlights } from "@/lib/amadeus";
+import { airlines, searchFlights } from "@/lib/amadeus";
 
 export interface FilterState {
   stops: number[];
@@ -23,6 +23,7 @@ interface SearchState {
   filters: FilterState;
   isLoading: boolean;
   hasSearched: boolean;
+  airlines: { name: string; id: string }[];
 
   // Actions
   setSearchParams: (params: Partial<SearchParams>) => void;
@@ -62,6 +63,7 @@ export const useSearchStore = create<SearchState>((set, get) => ({
   results: [],
   filters: DEFAULT_FILTERS,
   isLoading: false,
+  airlines: airlines,
   setHasSearched: () => set({ hasSearched: true }),
   setSearchParams: (params) =>
     set((prevState) => ({
@@ -77,7 +79,7 @@ export const useSearchStore = create<SearchState>((set, get) => ({
 
   search: async (params) => {
     set({ isLoading: true, searchParams: params });
-    const flights = await searchFlights(
+    const { results, airlines } = await searchFlights(
       params.origin,
       params.destination,
       params.departureDate
@@ -86,14 +88,22 @@ export const useSearchStore = create<SearchState>((set, get) => ({
     set((state) => {
       // Smart filter adjustment based on new results (similar to original hook)
       const newFilters = { ...state.filters };
-      if (flights.length > 0) {
-        const maxPrice = Math.max(...flights.map((f) => f.price));
+      if (results.length > 0) {
+        const maxPrice = Math.max(...results.map((f) => f.price));
         newFilters.priceRange = [
           0,
           Math.max(state.filters.priceRange[1], maxPrice + 100),
         ];
       }
-      return { results: flights, filters: newFilters, isLoading: false };
+      return {
+        results,
+        filters: {
+          ...newFilters,
+          airlines: airlines.map((airline) => airline.id),
+        },
+        isLoading: false,
+        airlines,
+      };
     });
   },
 }));

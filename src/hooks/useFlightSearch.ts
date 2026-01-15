@@ -8,14 +8,8 @@ import {
 export type { Flight } from "@/lib/types";
 
 export function useFlightSearch() {
-  const {
-    results,
-    filters,
-    isLoading,
-    hasSearched,
-    setFilters,
-    searchParams,
-  } = useSearchStore();
+  const { results, filters, isLoading, hasSearched, setFilters, searchParams } =
+    useSearchStore();
   // We use the store's selector logic but wrap it in useMemo here to ensure
   // we only re-calculate when relevant state changes, preserving the original optimization.
   // Alternatively, we could just rely on the store selectors if they were memoized.

@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Slider } from "@/components/ui/slider";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useSearchStore } from "@/store/searchStore";
-import { SheetClose } from "../ui/sheet";
+import FilterSkeleton from "./FilterSkeleton";
 
 export interface FilterState {
   stops: number[];
@@ -12,15 +12,6 @@ export interface FilterState {
   priceRange: [number, number];
   departureTime: [number, number];
 }
-
-const airlines = [
-  { id: "united", name: "United Airlines" },
-  { id: "delta", name: "Delta Air Lines" },
-  { id: "american", name: "American Airlines" },
-  { id: "british", name: "British Airways" },
-  { id: "emirates", name: "Emirates" },
-  { id: "lufthansa", name: "Lufthansa" },
-];
 
 const stopOptions = [
   { value: 0, label: "Nonstop" },
@@ -35,7 +26,10 @@ export function Filters({
 }) {
   const filters = useSearchStore((store) => store.filters);
   const setFilters = useSearchStore((store) => store.setFilters);
+  const isLoading = useSearchStore((store) => store.isLoading);
   const [stops, setStops] = useState<number[]>([0, 1, 2]);
+  const airlines = useSearchStore((store) => store.airlines);
+
   const [selectedAirlines, setSelectedAirlines] = useState<string[]>(
     airlines.map((a) => a.id)
   );
@@ -184,24 +178,35 @@ export function Filters({
       {/* Airlines */}
       <div className="space-y-3">
         <h3 className="font-semibold text-foreground">Airlines</h3>
-        <div className="space-y-2.5">
-          {airlines.map((airline) => (
-            <div key={airline.id} className="flex items-center space-x-3">
-              <Checkbox
-                id={`airline-${airline.id}`}
-                checked={selectedAirlines.includes(airline.id)}
-                onCheckedChange={() => handleAirlineToggle(airline.id)}
-                className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
-              />
-              <Label
-                htmlFor={`airline-${airline.id}`}
-                className="text-sm cursor-pointer text-foreground/80"
-              >
-                {airline.name}
-              </Label>
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <FilterSkeleton />
+        ) : (
+          <div className="space-y-2.5">
+            {airlines.map((airline) => (
+              <div key={airline.id} className="flex items-center space-x-3">
+                <Checkbox
+                  id={`airline-${airline.id}`}
+                  checked={selectedAirlines.includes(airline.id)}
+                  onCheckedChange={() => handleAirlineToggle(airline.id)}
+                  className="border-border data-[state=checked]:bg-primary data-[state=checked]:border-primary"
+                />
+                <Label
+                  htmlFor={`airline-${airline.id}`}
+                  className="text-sm cursor-pointer text-foreground/80"
+                >
+                  {airline.name
+                    .split(" ")
+                    .map(
+                      (s) =>
+                        s.charAt(0).toUpperCase() + s.slice(1).toLowerCase()
+                    )
+                    .join(" ")}{" "}
+                  ({airline.id})
+                </Label>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Reset */}
